@@ -5,7 +5,6 @@ class MessagesModel extends Model {
   async add({ conf_id, from_id, text }){
 
     const client = await this.db.connect()
-
     try{
       await client.query('BEGIN')
 

@@ -21,8 +21,8 @@ function IncomingCallScreen ({}){
           <Text style={styles.sub}>@{callee.login}</Text>
         </View>
         <View style={styles.buttons}>
-          <CallButton onClick={() => callStore.decline()} title="отклонить" style={{backgroundColor: colors.red}} rotate="135deg" size={65}/>
-          <CallButton onClick={() => callStore.answer()} title="принять" size={65}/>
+          <CallButton onPress={() => callStore.decline()} title="отклонить" style={{backgroundColor: colors.red}} rotate="135deg" size={65}/>
+          <CallButton onPress={() => callStore.answer()} title="принять" size={65}/>
         </View>
       </View>
     </Layout>

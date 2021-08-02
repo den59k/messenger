@@ -7,19 +7,18 @@ import UserIcon from 'src/components/user-icon'
 import { num } from 'src/libs/rus'
 import { colors, fonts, paddings } from 'src/styles'
 
-function CallHeader ({ callee }){
+function CallHeader ({ info, roomStore }){
 
   
   return (
     <View style={styles.header}>
-      <UserIcon src={callee.avatar} size={44} type={callee.type} style={{marginLeft: 2}}/>
+      <UserIcon src={info.avatar} size={44} type={info.type} style={{marginLeft: 2}}/>
       <View style={{marginLeft: 20}}>
-        <Text style={styles.elementTitle}>{callee.name}</Text>
-        <Text style={styles.elementSub}>0:00</Text>
+        <Text style={styles.elementTitle}>{info.name}</Text>
+        <Text style={styles.elementSub}>{num(roomStore.users.size+1, "участник", "участника", "участников")}</Text>
       </View>
     </View>
   )
-
 }
 
 export default observer(CallHeader)

@@ -1,4 +1,5 @@
 import AppModel from '../../model';
+import Room from '../../plugins/rooms/room';
 import WsEmitter from '../../plugins/ws/emitter';
 
 declare module 'fastify' {
@@ -6,6 +7,7 @@ declare module 'fastify' {
     model: AppModel,
     upload: any,
     ws: WsEmitter,
+    rooms: Map<string, Room>,
     generateJWT: (userData: any, exp?: number) => Promise<string>,
     decodeJWT: (token: string) => Promise<any>
   }

@@ -15,4 +15,11 @@ export default class UsersModel extends Model {
     )
     return resp.rows[0]
   }
+
+  async getMultiple(ids: Array<number>){
+    const resp = await this.db.query(`
+      SELECT id, name, login, avatar FROM users WHERE id = ANY($1::int[])
+    `, [ ids ])
+    return resp.rows
+  }
 }

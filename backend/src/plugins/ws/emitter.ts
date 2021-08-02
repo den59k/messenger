@@ -33,7 +33,7 @@ class WsEmitter extends EventEmitter {
     this._server.on("listening", () => console.log("WebSocket server listening on "+(server.address() as any).port+" port"))
     this._server.on("connection", this._newConnection.bind(this))
 
-    const interval = setInterval(this._doPing.bind(this), 30000)
+    const interval = setInterval(this._doPing.bind(this), 10000)
     this._server.on("close", () => clearInterval(interval))
   }
 
@@ -41,6 +41,11 @@ class WsEmitter extends EventEmitter {
     if(!this._sockets.has(user_id)) return
     for(let ws of this._sockets.get(user_id).values())
       this._wsSend(ws, type, payload)
+  }
+
+  wsSend(user_id: number, ws_id: string, type: string, payload: any){
+    if(!this._sockets.has(user_id)) return
+    this._wsSend(this._sockets.get(user_id).get(ws_id), type, payload)
   }
 
   _newConnection(ws: Socket){
@@ -68,11 +73,12 @@ class WsEmitter extends EventEmitter {
       const ws_id = nanoid()
       ws.user_id = user_id
       ws.id = ws_id
-
+      
       ws.on("close", () => {
         this._sockets.get(user_id).delete(ws_id)
         if(this._sockets.get(user_id).size === 0)
           this._sockets.delete(user_id)
+        this.emit("socket-close", ws_id)
       })
 
       if(!this._sockets.has(user_id))
@@ -84,12 +90,16 @@ class WsEmitter extends EventEmitter {
   }
 
   _wsSend(ws: Socket, type: string, payload: any){
+    if(!ws) return
     ws.send(JSON.stringify({ type, payload }))
   }
 
   _doPing(){
     this._server.clients.forEach((ws: Socket) => {
-      if(!ws.isAlive) return ws.terminate()
+      if(!ws.isAlive) {
+        this.emit("socket-close", ws.id)
+        return ws.terminate()
+      }
       ws.isAlive = false
       ws.ping()
     })

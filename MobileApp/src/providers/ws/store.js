@@ -16,6 +16,7 @@ class RouterStore {
 			if(error) return console.log(error)
 			this.setId(id)
 		})
+		this.on("error", error => console.log(error))
 	}
 
 	setId(id){
@@ -28,6 +29,7 @@ class RouterStore {
 	}
 
 	onOpen(){
+		console.log("WebSocket connected")
 		this.status = 'connected'
 		const accessToken = getAccessToken()
 		this.send('handshake', { accessToken })
@@ -56,6 +58,7 @@ class RouterStore {
 	}
 
 	init(){
+		console.log("Try to connect to websocket...")
 		this.socket = new WebSocket(wsURL);
 		this.socket.addEventListener('open', () => this.onOpen())
 		this.socket.addEventListener('close', () => this.onClose())

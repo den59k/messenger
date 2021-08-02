@@ -13,6 +13,7 @@ import { useMessageStore } from 'src/providers/messages'
 import { useAuthStore } from 'src/providers/auth'
 import CallScreen from '../call'
 import { useCallStore } from 'src/providers/call'
+import { observer } from 'mobx-react'
 
 
 const Stack = createStackNavigator()
@@ -31,6 +32,7 @@ const _options = {
 const options = {   ...TransitionPresets.DefaultTransition, ..._options }
 const messageOptions = { ...TransitionPresets.SlideFromRightIOS, ..._options }
 
+
 function AppContainer (){
 
   const navigationRef = useRef(null);
@@ -42,19 +44,30 @@ function AppContainer (){
   useEffect(() => {
     
     ws.init()
-    const messageCallback = ws.on("message", messageStore.receiveMessage.bind(messageStore))
-    const callCallback = ws.on("call", callStore.receiveCall.bind(callStore))
+
+    const callbacks = {
+      "message": messageStore.receiveMessage.bind(messageStore),
+      "call-invite": callStore.onInvite.bind(callStore),
+      "call-ok": callStore.onOk.bind(callStore),
+      "call-decline": callStore.onDecline.bind(callStore),
+      "call-cancel": callStore.onCancel.bind(callStore)
+    }
+    
+    for(let key in callbacks)
+      ws.on(key, callbacks[key])
 
     messageStore.init({ user_id: authStore.userData.id })
-    callStore.init()
+    callStore.init(ws)
 
     return () => {
-      ws.off("message", messageCallback)
-      ws.off("call", callCallback)
+      console.log("dispose ws")
+      ws.dispose()
+      for(let key in callbacks)
+        ws.off(key, callbacks[key])
     }
   }, [])
 
-  if(callStore.call)
+  if(callStore.callStatus && callStore.callStatus !== "none")
     return <CallScreen/>
 
   return (
@@ -62,7 +75,6 @@ function AppContainer (){
       <StatusBar backgroundColor={colors.statusBar}/>
       <NavigationContainer theme={MyTheme} ref={navigationRef}>
         <Stack.Navigator>
-          <Stack.Screen options={{...options, headerShown: false }} name="Call" component={CallScreen} />
           <Stack.Screen options={{...options, headerShown: false }} name="Main" component={MainScreen}/>
           <Stack.Screen options={{...options, title: "Создание группы"}} name="CreateGroup" component={CreateGroupScreen}/>
           <Stack.Screen options={{...options, title: "Написать сообщение"}} name="CreateConf" component={CreateConfScreen}/>
@@ -73,4 +85,4 @@ function AppContainer (){
   )
 }
 
-export default AppContainer
+export default observer(AppContainer)

@@ -6,6 +6,7 @@
     "@types/sharp": "^0.28.3",
     "@types/ws": "^7.4.6",
     "ajv": "^8.6.1",
+    "axios": "^0.21.1",
     "dotenv": "^10.0.0",
     "fastify": "^3.17.0",
     "fastify-jwt": "^3.0.0",

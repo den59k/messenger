@@ -74,3 +74,16 @@ CREATE TABLE messages (
 	readed boolean DEFAULT true,
 	PRIMARY KEY (id, conf_id)
 );
+
+CREATE TYPE call_type AS ENUM ('waiting', 'active', 'unanswered', 'decline', 'answered');
+
+CREATE TABLE calls (
+	id int,
+	conf_id int,
+	room_id text,
+	caller_id int,
+	time bigint,
+	end_time bigint,
+	status call_type,
+	PRIMARY KEY (id, conf_id)
+);

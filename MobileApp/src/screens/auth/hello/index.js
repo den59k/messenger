@@ -13,7 +13,7 @@ export default function HelloScreen ({ navigation }){
       </View>
       <View style={{marginBottom: 30 }}>
         <Text style={[styles.text, { color: colors.subText }]}>Добро пожаловать!</Text>
-        <Text style={styles.text}>В наших кругах уже 3 пользователя</Text>
+        <Text style={styles.text}>В наших кругах уже 4 пользователя</Text>
       </View>
       <Button 
         onPress={() => navigation.navigate('RegisterHello')} 

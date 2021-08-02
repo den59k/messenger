@@ -10,6 +10,7 @@ class ConfStore {
   messages = new observable.array([], { deep: true })
   messageStore = null
   type = ""
+  activeCall = null
 
   constructor(){
     makeObservable(this, {
@@ -17,6 +18,7 @@ class ConfStore {
       status: observable,
       type: observable,
       messages: observable,
+      activeCall: observable,
       addMessage: action,
       init: action,
       receiveMessage: action
@@ -38,13 +40,14 @@ class ConfStore {
   }
 
   async _init(){
-    const { info, userInfo, messages, error } = await GET(this.url)
+    const { info, userInfo, messages, error, activeCall } = await GET(this.url)
     if(error) return
     runInAction(() => {
       this.info = info
       this.messages.replace(messages)
       this.userInfo = userInfo
       this.status = "loaded"
+      this.activeCall = activeCall
     })
   }
 

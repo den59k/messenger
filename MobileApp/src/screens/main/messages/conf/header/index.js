@@ -2,14 +2,17 @@ import { useNavigation } from '@react-navigation/native'
 import { HeaderBackButton } from '@react-navigation/stack'
 import { observer } from 'mobx-react'
 import React from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import UserIcon from 'src/components/user-icon'
 import { num } from 'src/libs/rus'
 import { colors, fonts } from 'src/styles'
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useCallStore } from 'src/providers/call'
 
 function ConfHeader ({ confStore }){
 
   const navigation = useNavigation()
+  const callStore = useCallStore()
 
   if(!confStore.info) return (
     <View style={styles.header}>
@@ -32,6 +35,14 @@ function ConfHeader ({ confStore }){
         <Text style={styles.elementTitle}>{confStore.info.name}</Text>
         <Text style={styles.elementSub}>{sub}</Text>
       </View>
+      {confStore.type === "group" && (
+        <TouchableOpacity 
+          style={{ marginLeft: "auto", width: 50 }} 
+          onPress={() => callStore.callGroup(confStore.info.id)}
+        >
+          <Ionicons size={23} name={"ios-call"} color={confStore.activeCall? colors.primary: colors.secondary}/>
+        </TouchableOpacity>
+      )}
     </View>
   )
 

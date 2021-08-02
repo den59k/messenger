@@ -49,11 +49,17 @@ export default async function messages (fastify: FastifyInstance){
     if(!info) return reply.error({ group_id: "group not found"}, 404)
 
     let messages = []
+    let activeCall = null
     const confInfo = await fastify.model.messages.getGroupConf({ group_id })
-    if(confInfo) messages = await fastify.model.messages.getList({ conf_id: confInfo.id })
+    if(confInfo){ 
+      activeCall = await fastify.model.calls.getLastCall({ conf_id: confInfo.id })
+      if(activeCall && activeCall.status !== "active") activeCall = null
+
+      messages = await fastify.model.messages.getList({ conf_id: confInfo.id })
+    }
 
     const userInfo = await fastify.model.users.get({ user_id })
-    return { info, userInfo, messages, confInfo }
+    return { info, userInfo, messages, confInfo, activeCall }
   })
 
   fastify.post("/groups/:group_id", { schema: { ...groupMessagesParamsSchema, ...messageSchema }}, async (request, reply) => {

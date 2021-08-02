@@ -8,11 +8,11 @@ import OutcomingCallScreen from './outcoming'
 import CallRoomScreen from './call-room'
 import { observer } from 'mobx-react'
 
-function getScreen(call){
+function getScreen(callStatus){
 
-  return <CallRoomScreen/>
-  return <OutcomingCallScreen/>
-  return <IncomingCallScreen/>
+  if(callStatus === "active") return <CallRoomScreen/>
+  if(callStatus === "outcoming") return <OutcomingCallScreen/>
+  if(callStatus === "incoming") return <IncomingCallScreen/>
 }
 
 function CallScreen (){
@@ -21,7 +21,7 @@ function CallScreen (){
   return (
     <View style={{backgroundColor: colors.background, flex: 1}}>
       <StatusBar backgroundColor={colors.statusBar}/>
-      {getScreen(callStore.call)}
+      {getScreen(callStore.callStatus)}
     </View>
   )
 }

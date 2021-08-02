@@ -6,6 +6,7 @@ import TokensModel from './tokens'
 import GroupsModel from './groups'
 import UsersModel from './users'
 import MessagesModel from './messages'
+import CallsModel from './calls'
 
 export default class AppModel {
 
@@ -15,6 +16,7 @@ export default class AppModel {
 	groups: GroupsModel
 	users: UsersModel
 	messages: MessagesModel
+	calls: CallsModel
 
 	constructor(){
 	}
@@ -26,5 +28,6 @@ export default class AppModel {
 		this.groups = new GroupsModel(this.db)
 		this.users = new UsersModel(this.db)
 		this.messages = new MessagesModel(this.db)
+		this.calls = new CallsModel(this.db)
 	}
 }
