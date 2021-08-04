@@ -1,4 +1,4 @@
 {
-  "url": "http://192.168.0.100:3001",
-	"wsURL": "ws://192.168.0.100:3001"
+  "url": "https://api.easix.ru",
+	"wsURL": "wss://api.easix.ru"
 }

@@ -33,11 +33,15 @@ export default async function messages (fastify: FastifyInstance){
     const { user_id: to_id } = request.params as any
     const { text, _id } = request.body as any
 
+    const info = await fastify.model.users.get({ user_id: to_id })
     const confInfo = await fastify.model.messages.getConf([ from_id, to_id ], true)
     const message = await fastify.model.messages.add({ conf_id: confInfo.id, from_id, text })
 
     const senderInfo = await fastify.model.users.get({ user_id: from_id })
-    _sendMessage([ from_id, to_id ], { senderInfo, message, _id })
+
+    //Мы отправляем сообщение по веб-сокету получателю, и отправителю сообщений
+    _sendMessage([ to_id ], { message, _id, senderInfo, info: senderInfo, isGroup: false })
+    _sendMessage([ from_id ], { senderInfo, message, _id, info, isGroup: false })
 
     return { message }
   } )
@@ -70,13 +74,13 @@ export default async function messages (fastify: FastifyInstance){
     const info = await fastify.model.groups.get({ group_id, user_id: from_id })
     if(!info) return reply.error({ group_id: "group not found" }, 404)
     if(!info.consists) return reply.error({ group_id: "user is not consists to group" }, 403)
-
+    
     const confInfo = await fastify.model.messages.getGroupConf({ group_id }, true)
     const message = await fastify.model.messages.add({ conf_id: confInfo.id, from_id, text })
     
     const users = await fastify.model.groups.getUserList({ group_id })
     const senderInfo = await fastify.model.users.get({ user_id: from_id })
-    _sendMessage(users, { senderInfo, info, message, _id })
+    _sendMessage(users, { senderInfo, info, message, _id, isGroup: true })
     
     return { message }
   })

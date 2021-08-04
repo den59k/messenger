@@ -85,7 +85,7 @@ class MessagesModel extends Model {
     const confInfo = await this.db.query(`
       SELECT id, last_message_id, last_call_id FROM ls_confs WHERE user_one=$1 AND user_two=$2
     `, users)
-
+    
     if(confInfo.rowCount > 0) return confInfo.rows[0]
     if(!create) return null
 

@@ -1,7 +1,5 @@
 import { GET, REST } from "src/services";
-import { observable, runInAction } from "mobx";
-
-const { makeAutoObservable } = require("mobx");
+import { observable, runInAction, makeAutoObservable } from "mobx";
 
 class MessageStore {
 
@@ -38,13 +36,13 @@ class MessageStore {
     this.messages.unshift(conf)
   }
 
-  receiveMessage({ info, senderInfo, message }){
+  receiveMessage({ info, isGroup, senderInfo, message }){
 
     if(!this.messages.some(m => m.conf_id === message.conf_id))
-      if(info)
+      if(isGroup)
         this.messages.push({ conf_id: message.conf_id, group_id: info.id, group_name: info.name, group_avatar: info.avatar })
       else
-        this.messages.push({ conf_id: message.conf_id, user_id: senderInfo.id, user_name: senderInfo.name, user_avatar: senderInfo.avatar })
+        this.messages.push({ conf_id: message.conf_id, user_id: info.id, user_name: info.name, user_avatar: info.avatar })
 
     this.addMessage(message.conf_id, { ...message, sender_name: senderInfo.name })
   }

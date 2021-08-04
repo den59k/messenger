@@ -42,6 +42,7 @@ class ConfStore {
   async _init(){
     const { info, userInfo, messages, error, activeCall } = await GET(this.url)
     if(error) return
+
     runInAction(() => {
       this.info = info
       this.messages.replace(messages)

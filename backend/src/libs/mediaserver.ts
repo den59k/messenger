@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const url = 'http://localhost:5000'
+const url = process.env.MEDIASERVER_URL || 'http://localhost:5000'
 
 export const createRoom = () => axios.post(url+'/rooms', {}).then(resp => resp.data)
 

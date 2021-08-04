@@ -6,3 +6,5 @@
 /certs
 
 .env
+
+/public/*
